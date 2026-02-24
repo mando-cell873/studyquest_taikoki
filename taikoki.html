@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天下布武 学習録</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Antique&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f0c08; --surface:#1a1408; --card:#231c0e; --border:#3d3018;
+  --accent:#d4a030; --accent2:#c03020; --accent3:#7ab840;
+  --text:#f0e8d0; --dim:#907858; --xp:#e8c060;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:
+    radial-gradient(600px 600px at 20% 10%,rgba(180,120,20,0.06) 0%,transparent 100%),
+    radial-gradient(400px 400px at 80% 80%,rgba(150,30,10,0.06) 0%,transparent 100%),
+    repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(212,160,48,0.015) 40px,rgba(212,160,48,0.015) 41px),
+    repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(212,160,48,0.015) 40px,rgba(212,160,48,0.015) 41px);
+  pointer-events:none;z-index:0;
+}
+.wrap{max-width:480px;margin:0 auto;padding:20px 16px 40px;position:relative;z-index:1;}
+
+/* Header */
+.head{text-align:center;margin-bottom:24px;padding:16px 0;}
+.head-deco{font-size:0.65rem;letter-spacing:0.5em;color:var(--dim);margin-bottom:6px;}
+.head h1{font-family:'Zen Antique',serif;font-size:2rem;font-weight:400;color:var(--accent);text-shadow:0 0 20px rgba(212,160,48,0.4);letter-spacing:0.15em;}
+.head p{color:var(--dim);font-size:0.75rem;margin-top:6px;letter-spacing:0.2em;}
+.head-line{width:80px;height:1px;background:linear-gradient(to right,transparent,var(--accent),transparent);margin:10px auto 0;}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:14px;position:relative;}
+.card::before{content:'';position:absolute;top:4px;left:4px;right:4px;bottom:4px;border:1px solid rgba(212,160,48,0.1);border-radius:2px;pointer-events:none;}
+.card h2{font-family:'Zen Antique',serif;font-size:0.85rem;color:var(--dim);margin-bottom:14px;letter-spacing:0.3em;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:8px;}
+.card h2::after{content:'';-webkit-flex:1;flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
+
+/* Character */
+.char-top{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:20px;margin-bottom:20px;}
+.char-avatar{width:96px;height:96px;position:relative;-webkit-flex-shrink:0;flex-shrink:0;}
+.char-avatar svg{width:100%;height:100%;display:block;-webkit-filter:drop-shadow(0 0 10px rgba(212,160,48,0.4));filter:drop-shadow(0 0 10px rgba(212,160,48,0.4));}
+.cstage{position:absolute;top:0;left:0;width:100%;height:100%;}
+.char-info{-webkit-flex:1;flex:1;min-width:0;}
+.char-name{font-family:'Zen Antique',serif;font-size:1.3rem;color:var(--accent);margin-bottom:4px;letter-spacing:0.1em;}
+.char-title{font-size:0.7rem;color:var(--accent2);background:rgba(192,48,32,0.15);border:1px solid rgba(192,48,32,0.4);border-radius:2px;padding:2px 10px;display:inline-block;margin-bottom:8px;letter-spacing:0.15em;}
+.char-lv{font-size:0.72rem;color:var(--dim);letter-spacing:0.1em;}
+.char-lv span{font-size:1.3rem;font-weight:700;color:var(--text);font-family:'Zen Antique',serif;}
+
+/* XP bar */
+.xp-labels{display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;font-size:0.7rem;color:var(--dim);margin-bottom:5px;letter-spacing:0.1em;}
+.xp-labels span:last-child{color:var(--xp);}
+.xp-bg{height:8px;background:var(--surface);border:1px solid var(--border);border-radius:0;}
+.xp-fill{height:100%;background:-webkit-linear-gradient(left,#a06010,#e8c060);background:linear-gradient(to right,#a06010,#e8c060);-webkit-transition:width 0.8s;transition:width 0.8s;-webkit-box-shadow:0 0 8px rgba(232,192,96,0.5);box-shadow:0 0 8px rgba(232,192,96,0.5);}
+
+/* Stats */
+.stats{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:10px;margin-top:16px;}
+.stat{background:var(--surface);border:1px solid var(--border);padding:10px;text-align:center;-webkit-flex:1 1 calc(50% - 5px);flex:1 1 calc(50% - 5px);}
+.stat-icon{font-size:1.1rem;}
+.stat-val{font-family:'Zen Antique',serif;font-size:1.1rem;font-weight:400;color:var(--text);line-height:1.2;}
+.stat-val span{font-size:0.6rem;}
+.stat-lbl{font-size:0.62rem;color:var(--dim);margin-top:2px;letter-spacing:0.1em;}
+.stat-avg{border-color:rgba(122,184,64,0.3);background:rgba(122,184,64,0.05);}
+.stat-avg .stat-val{color:var(--accent3);}
+
+/* Subjects */
+.subj-row{display:-webkit-flex;display:flex;gap:8px;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin-bottom:20px;}
+.subj-btn{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:6px 12px;font-size:0.76rem;color:var(--dim);cursor:pointer;font-family:'Noto Sans JP',sans-serif;-webkit-tap-highlight-color:transparent;letter-spacing:0.1em;}
+.subj-btn.active{background:rgba(212,160,48,0.12);border-color:var(--accent);color:var(--accent);}
+
+/* Koto panel */
+.koto-panel{background:rgba(122,90,20,0.1);border:1px solid rgba(212,160,48,0.25);padding:16px;margin-bottom:20px;}
+.koto-panel label{font-size:0.7rem;color:var(--dim);display:block;margin-bottom:5px;letter-spacing:0.1em;}
+.koto-panel input,.koto-panel textarea{width:100%;background:var(--surface);border:1px solid var(--border);padding:8px 12px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:0.82rem;outline:none;-webkit-appearance:none;}
+.koto-panel textarea{resize:none;}
+.diff-row{display:-webkit-flex;display:flex;gap:6px;}
+.diff-btn{-webkit-flex:1;flex:1;padding:6px 4px;background:var(--surface);border:1px solid var(--border);color:var(--dim);font-size:0.72rem;cursor:pointer;font-family:'Noto Sans JP',sans-serif;-webkit-tap-highlight-color:transparent;letter-spacing:0.05em;}
+.diff-btn.active{background:rgba(212,160,48,0.12);border-color:var(--accent);color:var(--accent);}
+.xp-rate{font-family:'Zen Antique',serif;font-size:1.2rem;color:var(--accent);text-align:center;padding:4px;}
+
+/* Timer */
+.timer-display{font-family:'Zen Antique',serif;font-size:4rem;color:var(--text);text-align:center;margin-bottom:4px;line-height:1;-webkit-transition:color 0.3s;transition:color 0.3s;letter-spacing:0.05em;}
+.timer-display.running{color:var(--accent);text-shadow:0 0 20px rgba(212,160,48,0.5);}
+.timer-sub{font-size:0.75rem;color:var(--dim);text-align:center;margin-bottom:20px;letter-spacing:0.2em;}
+.timer-btns{display:-webkit-flex;display:flex;gap:12px;-webkit-justify-content:center;justify-content:center;}
+.btn{border:none;padding:12px 28px;font-family:'Noto Sans JP',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;letter-spacing:0.1em;border-radius:2px;}
+.btn-start{background:-webkit-linear-gradient(135deg,#a06010,#d4a030);background:linear-gradient(135deg,#a06010,#d4a030);color:#0f0c08;-webkit-box-shadow:0 4px 16px rgba(212,160,48,0.3);box-shadow:0 4px 16px rgba(212,160,48,0.3);}
+.btn-stop{background:rgba(192,48,32,0.2);color:var(--accent2);border:1px solid rgba(192,48,32,0.5);}
+.btn-reset{background:var(--surface);color:var(--dim);border:1px solid var(--border);padding:12px 18px;}
+
+/* Log */
+.log-item{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);margin-bottom:6px;}
+.log-dot{width:8px;height:8px;-webkit-flex-shrink:0;flex-shrink:0;}
+.log-subj{-webkit-flex:1;flex:1;font-size:0.85rem;}
+.log-time{font-size:0.8rem;color:var(--dim);}
+.log-xp{font-size:0.75rem;color:var(--xp);font-weight:700;}
+.empty-log{text-align:center;color:var(--dim);font-size:0.8rem;padding:20px;letter-spacing:0.2em;}
+
+/* Ach */
+.ach-grid{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:8px;}
+.ach-item{background:var(--surface);border:1px solid var(--border);padding:10px 4px;text-align:center;width:calc(25% - 6px);}
+.ach-item.on{border-color:rgba(212,160,48,0.5);background:rgba(212,160,48,0.06);}
+.ach-icon{font-size:1.5rem;-webkit-filter:grayscale(100%);filter:grayscale(100%);}
+.ach-item.on .ach-icon{-webkit-filter:none;filter:none;}
+.ach-name{font-size:0.58rem;color:var(--dim);margin-top:4px;line-height:1.3;}
+.ach-item.on .ach-name{color:var(--accent);}
+
+/* Games */
+.mg-item{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:14px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.mg-lock{opacity:0.4;cursor:default;}
+
+/* Overlays */
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;display:none;-webkit-overflow-scrolling:touch;}
+.overlay.show{display:block;}
+.lu-bg{background:rgba(0,0,0,0.9);display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;}
+.lu-box{text-align:center;padding:24px;background:var(--card);border:2px solid var(--accent);max-width:340px;width:90%;position:relative;}
+.lu-box::before{content:'';position:absolute;top:6px;left:6px;right:6px;bottom:6px;border:1px solid rgba(212,160,48,0.2);pointer-events:none;}
+.lu-box .big{font-family:'Zen Antique',serif;font-size:0.9rem;color:var(--dim);letter-spacing:0.5em;margin-bottom:8px;}
+.lu-box .lnum{font-family:'Zen Antique',serif;font-size:5rem;line-height:1;color:var(--accent);text-shadow:0 0 30px rgba(212,160,48,0.6);}
+.lu-box .ltitle{font-family:'Zen Antique',serif;font-size:1.1rem;color:var(--text);margin-top:8px;margin-bottom:8px;letter-spacing:0.1em;}
+.lu-box .lunlock{font-size:0.82rem;color:var(--accent3);margin-bottom:16px;}
+.lu-btns{display:-webkit-flex;display:flex;gap:10px;-webkit-justify-content:center;justify-content:center;-webkit-flex-wrap:wrap;flex-wrap:wrap;}
+.lu-btn{border:none;padding:10px 22px;font-family:'Noto Sans JP',sans-serif;font-size:0.85rem;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:2px;}
+.mg-bg{background:rgba(15,12,8,0.97);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.mg-inner{max-width:480px;margin:0 auto;padding:20px 16px 40px;position:relative;}
+.mg-close-btn{position:fixed;top:16px;right:16px;background:var(--surface);border:1px solid var(--border);color:var(--text);width:40px;height:40px;font-size:1.1rem;cursor:pointer;z-index:10;-webkit-tap-highlight-color:transparent;}
+
+/* Toast */
+.toast{position:fixed;top:20px;left:50%;-webkit-transform:translateX(-50%) translateY(-80px);transform:translateX(-50%) translateY(-80px);background:var(--card);border:1px solid var(--accent);padding:14px 24px;font-family:'Zen Antique',serif;font-size:0.9rem;color:var(--accent);-webkit-transition:-webkit-transform 0.4s;transition:transform 0.4s;z-index:1000;white-space:nowrap;letter-spacing:0.1em;}
+.toast.show{-webkit-transform:translateX(-50%) translateY(0);transform:translateX(-50%) translateY(0);}
+
+/* Particles (flower petals style) */
+.particle{position:fixed;width:6px;height:6px;border-radius:50%;pointer-events:none;z-index:998;-webkit-animation:fall linear forwards;animation:fall linear forwards;}
+@-webkit-keyframes fall{from{-webkit-transform:translateY(-10px) rotate(0deg);opacity:1;}to{-webkit-transform:translateY(100vh) rotate(720deg);opacity:0;}}
+@keyframes fall{from{transform:translateY(-10px) rotate(0deg);opacity:1;}to{transform:translateY(100vh) rotate(720deg);opacity:0;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="head-deco">〜 学問は力なり 〜</div>
+    <h1>天下布武 学習録</h1>
+    <p>勉学に励み、天下統一を目指せ</p>
+    <div class="head-line"></div>
+  </div>
+
+  <!-- Character Card -->
+  <div class="card">
+    <div class="char-top">
+      <div class="char-avatar">
+
+        <!-- Stage 1: Lv1-9 農民 -->
+        <svg id="cs1" class="cstage" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+          <ellipse cx="48" cy="91" rx="16" ry="3" fill="rgba(0,0,0,0.3)"/>
+          <!-- 菅笠 -->
+          <rect x="18" y="8" width="60" height="6" fill="#c8a860"/><rect x="12" y="14" width="72" height="4" fill="#a88840"/><rect x="30" y="6" width="36" height="8" fill="#c8a860"/>
+          <!-- 顔 -->
+          <rect x="24" y="18" width="48" height="36" fill="#d4a870"/>
+          <rect x="30" y="24" width="10" height="10" fill="#fff"/><rect x="56" y="24" width="10" height="10" fill="#fff"/>
+          <rect x="34" y="26" width="6" height="8" fill="#4a3010"/><rect x="58" y="26" width="6" height="8" fill="#4a3010"/>
+          <rect x="36" y="38" width="24" height="4" fill="#b07850"/>
+          <!-- 首 -->
+          <rect x="36" y="54" width="24" height="6" fill="#d4a870"/>
+          <!-- 農民服（茶色） -->
+          <rect x="18" y="60" width="60" height="30" fill="#7a5830"/><rect x="18" y="60" width="6" height="30" fill="#5a4020"/><rect x="72" y="60" width="6" height="30" fill="#5a4020"/>
+          <rect x="24" y="60" width="48" height="6" fill="#9a7848"/>
+          <!-- 腕 -->
+          <rect x="6" y="60" width="12" height="28" fill="#d4a870"/><rect x="78" y="60" width="12" height="28" fill="#d4a870"/>
+          <!-- 脚 -->
+          <rect x="24" y="90" width="20" height="18" fill="#4a3820"/><rect x="52" y="90" width="20" height="18" fill="#4a3820"/>
+          <!-- 草鞋 -->
+          <rect x="22" y="108" width="24" height="6" fill="#8a7040"/><rect x="50" y="108" width="24" height="6" fill="#8a7040"/>
+          <!-- 鍬 -->
+          <rect x="84" y="40" width="6" height="54" fill="#8a6030"/><rect x="78" y="38" width="18" height="8" fill="#a08050"/><rect x="78" y="38" width="6" height="16" fill="#c0a060"/>
+        </svg>
+
+        <!-- Stage 2: Lv10-19 足軽 -->
+        <svg id="cs2" class="cstage" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" style="display:none">
+          <ellipse cx="48" cy="91" rx="16" ry="3" fill="rgba(0,0,0,0.3)"/>
+          <!-- 陣笠 -->
+          <rect x="18" y="8" width="60" height="8" fill="#505050"/><rect x="12" y="14" width="72" height="6" fill="#404040"/><rect x="36" y="4" width="24" height="10" fill="#606060"/>
+          <!-- 顔 -->
+          <rect x="24" y="20" width="48" height="34" fill="#d4a870"/>
+          <rect x="30" y="26" width="10" height="10" fill="#fff"/><rect x="56" y="26" width="10" height="10" fill="#fff"/>
+          <rect x="34" y="28" width="6" height="8" fill="#2a3a5a"/><rect x="58" y="28" width="6" height="8" fill="#2a3a5a"/>
+          <rect x="36" y="40" width="24" height="4" fill="#b07850"/>
+          <rect x="36" y="54" width="24" height="6" fill="#d4a870"/>
+          <!-- 足軽鎧（紺） -->
+          <rect x="18" y="60" width="60" height="30" fill="#2a3a6a"/><rect x="18" y="60" width="6" height="30" fill="#1a2a5a"/><rect x="72" y="60" width="6" height="30" fill="#1a2a5a"/>
+          <rect x="24" y="60" width="48" height="6" fill="#3a4a8a"/>
+          <rect x="30" y="72" width="36" height="12" fill="#1a2a5a"/>
+          <!-- 腕 -->
+          <rect x="6" y="60" width="12" height="28" fill="#2a3a6a"/><rect x="78" y="60" width="12" height="28" fill="#2a3a6a"/>
+          <!-- 脚 -->
+          <rect x="24" y="90" width="20" height="18" fill="#1a2a5a"/><rect x="52" y="90" width="20" height="18" fill="#1a2a5a"/>
+          <rect x="22" y="108" width="24" height="6" fill="#303030"/><rect x="50" y="108" width="24" height="6" fill="#303030"/>
+          <!-- 槍 -->
+          <rect x="84" y="20" width="6" height="74" fill="#8a6030"/><rect x="80" y="10" width="10" height="16" fill="#c0c0c8"/><rect x="82" y="8" width="6" height="8" fill="#e0e0e8"/>
+        </svg>
+
+        <!-- Stage 3: Lv20-29 武士 -->
+        <svg id="cs3" class="cstage" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" style="display:none">
+          <ellipse cx="48" cy="91" rx="18" ry="3" fill="rgba(0,0,0,0.3)"/>
+          <!-- 兜 -->
+          <rect x="18" y="4" width="60" height="20" fill="#2a2a2a"/><rect x="12" y="10" width="6" height="18" fill="#2a2a2a"/><rect x="78" y="10" width="6" height="18" fill="#2a2a2a"/>
+          <rect x="36" y="0" width="24" height="8" fill="#c8a030"/><!-- 前立て -->
+          <rect x="42" y="0" width="12" height="4" fill="#e8c040"/>
+          <rect x="12" y="20" width="72" height="6" fill="#404040"/><!-- 垂れ -->
+          <!-- 顔 -->
+          <rect x="24" y="26" width="48" height="28" fill="#d4a870"/>
+          <rect x="30" y="30" width="10" height="10" fill="#fff"/><rect x="56" y="30" width="10" height="10" fill="#fff"/>
+          <rect x="34" y="32" width="6" height="8" fill="#1a1a3a"/><rect x="58" y="32" width="6" height="8" fill="#1a1a3a"/>
+          <rect x="36" y="44" width="24" height="4" fill="#904040"/><!-- 口ひげ -->
+          <rect x="36" y="54" width="24" height="6" fill="#d4a870"/>
+          <!-- 鎧（黒） -->
+          <rect x="18" y="60" width="60" height="30" fill="#1a1a1a"/><rect x="18" y="60" width="6" height="30" fill="#0a0a0a"/><rect x="72" y="60" width="6" height="30" fill="#0a0a0a"/>
+          <rect x="24" y="60" width="48" height="6" fill="#c8a030"/><!-- 金の胸当て -->
+          <rect x="30" y="66" width="36" height="18" fill="#0a0a0a"/>
+          <rect x="36" y="72" width="24" height="6" fill="#c8a030"/>
+          <!-- 腕（鎧） -->
+          <rect x="6" y="60" width="12" height="28" fill="#1a1a1a"/><rect x="78" y="60" width="12" height="28" fill="#1a1a1a"/>
+          <!-- 脚 -->
+          <rect x="24" y="90" width="20" height="18" fill="#0a0a0a"/><rect x="52" y="90" width="20" height="18" fill="#0a0a0a"/>
+          <rect x="22" y="108" width="24" height="6" fill="#1a1a1a"/><rect x="50" y="108" width="24" height="6" fill="#1a1a1a"/>
+          <!-- 刀 -->
+          <rect x="0" y="52" width="18" height="6" fill="#c0c0c8"/><rect x="0" y="52" width="18" height="3" fill="#e0e0e8"/>
+          <rect x="16" y="48" width="8" height="14" fill="#8a6030"/>
+          <rect x="0" y="58" width="4" height="40" fill="#8a6030"/>
+        </svg>
+
+        <!-- Stage 4: Lv30-39 忍者 -->
+        <svg id="cs4" class="cstage" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" style="display:none">
+          <ellipse cx="48" cy="91" rx="16" ry="3" fill="rgba(0,0,0,0.4)"/>
+          <!-- 頭巾 -->
+          <rect x="18" y="6" width="60" height="30" fill="#101010"/>
+          <rect x="24" y="30" width="48" height="8" fill="#101010"/><!-- 目隠し部 -->
+          <!-- 目だけ -->
+          <rect x="30" y="28" width="12" height="8" fill="#101010"/><rect x="54" y="28" width="12" height="8" fill="#101010"/>
+          <rect x="34" y="30" width="6" height="6" fill="#ff4020"/><rect x="56" y="30" width="6" height="6" fill="#ff4020"/>
+          <!-- 覆面 -->
+          <rect x="24" y="36" width="48" height="18" fill="#101010"/>
+          <!-- 首 -->
+          <rect x="36" y="54" width="24" height="6" fill="#101010"/>
+          <!-- 忍び装束（黒） -->
+          <rect x="12" y="60" width="72" height="30" fill="#101010"/>
+          <!-- 手裏剣ベルト -->
+          <rect x="18" y="72" width="60" height="6" fill="#303030"/>
+          <rect x="24" y="70" width="8" height="10" fill="#c0c0c8"/><rect x="40" y="70" width="8" height="10" fill="#c0c0c8"/><rect x="56" y="70" width="8" height="10" fill="#c0c0c8"/>
+          <!-- 腕 -->
+          <rect x="0" y="60" width="12" height="28" fill="#101010"/><rect x="84" y="60" width="12" height="28" fill="#101010"/>
+          <!-- 脚 -->
+          <rect x="24" y="90" width="20" height="18" fill="#101010"/><rect x="52" y="90" width="20" height="18" fill="#101010"/>
+          <rect x="22" y="108" width="24" height="6" fill="#202020"/><rect x="50" y="108" width="24" height="6" fill="#202020"/>
+          <!-- 忍刀 -->
+          <rect x="78" y="20" width="6" height="70" fill="#303030"/><rect x="72" y="18" width="12" height="8" fill="#606060"/>
+          <rect x="80" y="18" width="4" height="72" fill="#808090"/>
+          <!-- 手裏剣（飛ぶ） -->
+          <rect x="0" y="30" width="10" height="10" fill="#c0c0c8"/><rect x="3" y="27" width="4" height="16" fill="#a0a0a8"/><rect x="-3" y="33" width="16" height="4" fill="#a0a0a8"/>
+        </svg>
+
+        <!-- Stage 5: Lv40-49 侍大将 -->
+        <svg id="cs5" class="cstage" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" style="display:none">
+          <ellipse cx="48" cy="91" rx="18" ry="3" fill="rgba(0,0,0,0.3)"/>
+          <!-- 立派な兜 -->
+          <rect x="18" y="0" width="60" height="24" fill="#8a1010"/><rect x="12" y="8" width="6" height="20" fill="#8a1010"/><rect x="78" y="8" width="6" height="20" fill="#8a1010"/>
+          <rect x="36" y="0" width="24" height="10" fill="#e8c040"/>
+          <rect x="42" y="0" width="12" height="6" fill="#fff080"/>
+          <rect x="12" y="24" width="72" height="8" fill="#6a0808"/>
+          <!-- 顔 -->
+          <rect x="24" y="24" width="48" height="30" fill="#d4a870"/>
+          <rect x="30" y="28" width="10" height="12" fill="#fff"/><rect x="56" y="28" width="10" height="12" fill="#fff"/>
+          <rect x="34" y="30" width="6" height="10" fill="#1a1a4a"/><rect x="58" y="30" width="6" height="10" fill="#1a1a4a"/>
+          <rect x="36" y="42" width="8" height="4" fill="#503020"/>
+          <rect x="44" y="42" width="8" height="4" fill="#503020"/><!-- ひげ -->
+          <rect x="36" y="54" width="24" height="6" fill="#d4a870"/>
+          <!-- 朱色鎧 -->
+          <rect x="18" y="60" width="60" height="30" fill="#8a1010"/><rect x="18" y="60" width="6" height="30" fill="#6a0808"/><rect x="72" y="60" width="6" height="30" fill="#6a0808"/>
+          <rect x="24" y="60" width="48" height="6" fill="#e8c040"/>
+          <rect x="30" y="66" width="36" height="18" fill="#6a0808"/>
+          <rect x="36" y="70" width="24" height="8" fill="#e8c040"/>
+          <!-- 腕 -->
+          <rect x="6" y="60" width="12" height="28" fill="#8a1010"/><rect x="78" y="60" width="12" height="28" fill="#8a1010"/>
+          <!-- 脚 -->
+          <rect x="24" y="90" width="20" height="18" fill="#6a0808"/><rect x="52" y="90" width="20" height="18" fill="#6a0808"/>
+          <rect x="22" y="108" width="24" height="6" fill="#303030"/><rect x="50" y="108" width="24" height="6" fill="#303030"/>
+          <!-- 大太刀 -->
+          <rect x="0" y="44" width="22" height="6" fill="#d0d0d8"/><rect x="0" y="44" width="22" height="3" fill="#f0f0f8"/>
+          <rect x="20" y="38" width="10" height="18" fill="#8a1010"/>
+          <rect x="0" y="50" width="6" height="50" fill="#8a6030"/>
+        </svg>
+
+        <!-- Stage 6: Lv50-59 武将 -->
+        <svg id="cs6" class="cstage" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" style="display:none">
+          <defs><radialGradient id="g6" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e8c040" stop-opacity="0.15"/><stop offset="100%" stop-color="#e8c040" stop-opacity="0"/></radialGradient></defs>
+          <rect x="0" y="0" width="96" height="96" fill="url(#g6)"/>
+          <ellipse cx="48" cy="91" rx="20" ry="4" fill="rgba(0,0,0,0.3)"/>
+          <!-- 豪華な兜 -->
+          <rect x="12" y="0" width="72" height="26" fill="#1a1a6a"/><rect x="6" y="8" width="6" height="22" fill="#1a1a6a"/><rect x="84" y="8" width="6" height="22" fill="#1a1a6a"/>
+          <rect x="36" y="0" width="24" height="12" fill="#e8c040"/><rect x="42" y="0" width="12" height="8" fill="#fff080"/>
+          <rect x="6" y="26" width="84" height="8" fill="#0a0a4a"/>
+          <!-- 飾り（角） -->
+          <rect x="0" y="4" width="10" height="24" fill="#c8a030"/><rect x="86" y="4" width="10" height="24" fill="#c8a030"/>
+          <rect x="0" y="0" width="10" height="6" fill="#e8c040"/><rect x="86" y="0" width="10" height="6" fill="#e8c040"/>
+          <!-- 顔 -->
+          <rect x="24" y="26" width="48" height="28" fill="#d4a870"/>
+          <rect x="30" y="30" width="10" height="12" fill="#fff"/><rect x="56" y="30" width="10" height="12" fill="#fff"/>
+          <rect x="34" y="32" width="6" height="10" fill="#101040"/><rect x="58" y="32" width="6" height="10" fill="#101040"/>
+          <rect x="36" y="44" width="24" height="4" fill="#604030"/>
+          <rect x="36" y="54" width="24" height="6" fill="#d4a870"/>
+          <!-- 藍色鎧 -->
+          <rect x="12" y="60" width="72" height="30" fill="#1a1a6a"/><rect x="12" y="60" width="6" height="30" fill="#0a0a4a"/><rect x="78" y="60" width="6" height="30" fill="#0a0a4a"/>
+          <rect x="18" y="60" width="60" height="6" fill="#e8c040"/>
+          <rect x="24" y="66" width="48" height="18" fill="#0a0a4a"/>
+          <rect x="30" y="70" width="36" height="8" fill="#e8c040"/>
+          <!-- 腕 -->
+          <rect x="0" y="60" width="12" height="28" fill="#1a1a6a"/><rect x="84" y="60" width="12" height="28" fill="#1a1a6a"/>
+          <!-- 脚 -->
+          <rect x="18" y="90" width="24" height="18" fill="#0a0a4a"/><rect x="54" y="90" width="24" height="18" fill="#0a0a4a"/>
+          <rect x="16" y="108" width="28" height="6" fill="#1a1a6a"/><rect x="52" y="108" width="28" height="6" fill="#1a1a6a"/>
+          <!-- 陣羽織（金） -->
+          <rect x="0" y="62" width="12" height="40" fill="#c8a030"/><rect x="84" y="62" width="12" height="40" fill="#c8a030"/>
+          <!-- 名刀 -->
+          <rect x="78" y="38" width="6" height="56" fill="#8a6030"/><rect x="72" y="30" width="18" height="14" fill="#1a1a6a"/>
+          <rect x="76" y="28" width="8" height="72" fill="#d0d8e0"/><rect x="78" y="28" width="4" height="72" fill="#f0f0f8"/>
+        </svg>
+
+        <!-- Stage 7: Lv60-69 大名 -->
+        <svg id="cs7" class="cstage" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" style="display:none">
+          <defs><radialGradient id="g7" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#c83020" stop-opacity="0.2"/><stop offset="100%" stop-color="#c83020" stop-opacity="0"/></radialGradient></defs>
+          <rect x="0" y="0" width="96" height="96" fill="url(#g7)"/>
+          <ellipse cx="48" cy="91" rx="22" ry="4" fill="rgba(150,20,0,0.4)"/>
+          <!-- 豪華兜（赤金） -->
+          <rect x="12" y="0" width="72" height="26" fill="#8a1010"/><rect x="6" y="6" width="6" height="24" fill="#8a1010"/><rect x="84" y="6" width="6" height="24" fill="#8a1010"/>
+          <rect x="36" y="0" width="24" height="12" fill="#e8c040"/>
+          <!-- 大きな前立て -->
+          <rect x="30" y="0" width="36" height="6" fill="#e8c040"/><rect x="36" y="0" width="24" height="4" fill="#fff080"/>
+          <rect x="6" y="26" width="84" height="8" fill="#6a0808"/>
+          <!-- 角飾り -->
+          <rect x="0" y="2" width="8" height="28" fill="#e8c040"/><rect x="88" y="2" width="8" height="28" fill="#e8c040"/>
+          <rect x="0" y="0" width="8" height="4" fill="#fff080"/><rect x="88" y="0" width="8" height="4" fill="#fff080"/>
+          <!-- 顔 -->
+          <rect x="24" y="26" width="48" height="28" fill="#c89860"/>
+          <rect x="30" y="30" width="10" height="12" fill="#fff"/><rect x="56" y="30" width="10" height="12" fill="#fff"/>
+          <rect x="34" y="32" width="6" height="10" fill="#200010"/><rect x="58" y="32" width="6" height="10" fill="#200010"/>
+          <!-- 鋭い目 -->
+          <rect x="30" y="30" width="14" height="4" fill="#8a1010"/><rect x="52" y="30" width="14" height="4" fill="#8a1010"/>
+          <rect x="38" y="44" width="20" height="4" fill="#603020"/>
+          <rect x="36" y="54" width="24" height="6" fill="#c89860"/>
+          <!-- 豪華朱鎧 -->
+          <rect x="12" y="60" width="72" height="30" fill="#8a1010"/><rect x="12" y="60" width="6" height="30" fill="#6a0808"/><rect x="78" y="60" width="6" height="30" fill="#6a0808"/>
+          <rect x="18" y="60" width="60" height="6" fill="#e8c040"/>
+          <rect x="24" y="66" width="48" height="18" fill="#6a0808"/>
+          <rect x="30" y="68" width="36" height="12" fill="#e8c040"/>
+          <rect x="36" y="72" width="24" height="6" fill="#fff080"/>
+          <!-- 陣羽織（朱・金） -->
+          <rect x="0" y="58" width="14" height="44" fill="#c83020"/><rect x="82" y="58" width="14" height="44" fill="#c83020"/>
+          <rect x="0" y="58" width="6" height="44" fill="#e8c040"/><rect x="90" y="58" width="6" height="44" fill="#e8c040"/>
+          <!-- 腕 -->
+          <rect x="0" y="60" width="12" height="28" fill="#8a1010"/><rect x="84" y="60" width="12" height="28" fill="#8a1010"/>
+          <!-- 脚 -->
+          <rect x="18" y="90" width="24" height="18" fill="#6a0808"/><rect x="54" y="90" width="24" height="18" fill="#6a0808"/>
+          <rect x="16" y="108" width="28" height="6" fill="#303030"/><rect x="52" y="108" width="28" height="6" fill="#303030"/>
+          <!-- 軍配 -->
+          <rect x="78" y="28" width="18" height="20" fill="#c83020"/><rect x="80" y="30" width="14" height="16" fill="#e8c040"/>
+          <rect x="86" y="48" width="6" height="48" fill="#8a6030"/>
+        </svg>
+
+        <!-- Stage 8: Lv70-79 関白 -->
+        <svg id="cs8" class="cstage" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" style="display:none">
+          <defs><radialGradient id="g8" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e8c040" stop-opacity="0.25"/><stop offset="100%" stop-color="#e8c040" stop-opacity="0"/></radialGradient></defs>
+          <rect x="0" y="0" width="96" height="96" fill="url(#g8)"/>
+          <ellipse cx="48" cy="92" rx="22" ry="5" fill="rgba(200,150,0,0.4)"/>
+          <!-- 公家冠 -->
+          <rect x="20" y="0" width="56" height="10" fill="#101010"/><rect x="30" y="10" width="36" height="16" fill="#101010"/>
+          <rect x="42" y="0" width="12" height="26" fill="#101010"/><!-- 立烏帽子 -->
+          <rect x="40" y="0" width="16" height="4" fill="#303030"/>
+          <!-- 顔 -->
+          <rect x="22" y="26" width="52" height="28" fill="#d4b080"/>
+          <rect x="28" y="30" width="12" height="12" fill="#fff"/><rect x="56" y="30" width="12" height="12" fill="#fff"/>
+          <rect x="32" y="32" width="8" height="10" fill="#101010"/><rect x="58" y="32" width="8" height="10" fill="#101010"/>
+          <rect x="36" y="44" width="24" height="4" fill="#604030"/>
+          <rect x="36" y="54" width="24" height="6" fill="#d4b080"/>
+          <!-- 束帯（白） -->
+          <rect x="16" y="60" width="64" height="34" fill="#f0f0e0"/><rect x="16" y="60" width="6" height="34" fill="#d8d8c8"/><rect x="74" y="60" width="6" height="34" fill="#d8d8c8"/>
+          <rect x="22" y="60" width="52" height="8" fill="#e8c040"/><!-- 金の帯 -->
+          <rect x="28" y="68" width="40" height="20" fill="#e8e8d8"/>
+          <rect x="34" y="72" width="28" height="10" fill="#c8a030"/><!-- 文様 -->
+          <!-- 袖（広袖） -->
+          <rect x="0" y="58" width="18" height="36" fill="#f0f0e0"/><rect x="78" y="58" width="18" height="36" fill="#f0f0e0"/>
+          <rect x="0" y="58" width="6" height="36" fill="#d8d8c8"/><rect x="90" y="58" width="6" height="36" fill="#d8d8c8"/>
+          <!-- 脚 -->
+          <rect x="22" y="94" width="22" height="14" fill="#101010"/><rect x="52" y="94" width="22" height="14" fill="#101010"/>
+          <rect x="20" y="108" width="26" height="6" fill="#c8a030"/><rect x="50" y="108" width="26" height="6" fill="#c8a030"/>
+          <!-- 笏 -->
+          <rect x="82" y="30" width="8" height="60" fill="#d4b060"/><rect x="82" y="28" width="8" height="6" fill="#a08040"/>
+        </svg>
+
+        <!-- Stage 9: Lv80-89 征夷大将軍 -->
+        <svg id="cs9" class="cstage" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" style="display:none">
+          <defs>
+            <radialGradient id="g9a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e8c040" stop-opacity="0.3"/><stop offset="100%" stop-color="#e8c040" stop-opacity="0"/></radialGradient>
+            <radialGradient id="g9b" cx="50%" cy="80%" r="40%"><stop offset="0%" stop-color="#c03020" stop-opacity="0.3"/><stop offset="100%" stop-color="#c03020" stop-opacity="0"/></radialGradient>
+          </defs>
+          <rect x="0" y="0" width="96" height="96" fill="url(#g9a)"/>
+          <rect x="0" y="0" width="96" height="96" fill="url(#g9b)"/>
+          <ellipse cx="48" cy="92" rx="24" ry="5" fill="rgba(200,150,0,0.5)"/>
+          <!-- 最高位の兜 -->
+          <rect x="10" y="0" width="76" height="28" fill="#8a1010"/>
+          <rect x="4" y="4" width="8" height="28" fill="#8a1010"/><rect x="84" y="4" width="8" height="28" fill="#8a1010"/>
+          <!-- 豪華前立て（日輪） -->
+          <rect x="32" y="0" width="32" height="14" fill="#e8c040"/>
+          <rect x="36" y="0" width="24" height="10" fill="#fff080"/>
+          <rect x="42" y="0" width="12" height="6" fill="#ffffff"/>
+          <rect x="4" y="28" width="88" height="10" fill="#6a0808"/>
+          <!-- 大角飾り -->
+          <rect x="0" y="0" width="8" height="34" fill="#e8c040"/>
+          <rect x="88" y="0" width="8" height="34" fill="#e8c040"/>
+          <rect x="0" y="0" width="8" height="6" fill="#fff080"/>
+          <rect x="88" y="0" width="8" height="6" fill="#fff080"/>
+          <!-- 顔 -->
+          <rect x="22" y="26" width="52" height="30" fill="#c89860"/>
+          <rect x="28" y="30" width="12" height="12" fill="#fff"/><rect x="56" y="30" width="12" height="12" fill="#fff"/>
+          <rect x="32" y="32" width="8" height="10" fill="#200010"/><rect x="58" y="32" width="8" height="10" fill="#200010"/>
+          <rect x="28" y="30" width="16" height="4" fill="#8a1010"/>
+          <rect x="52" y="30" width="16" height="4" fill="#8a1010"/>
+          <rect x="36" y="46" width="24" height="4" fill="#502010"/>
+          <rect x="36" y="56" width="24" height="6" fill="#c89860"/>
+          <!-- 最高位鎧（黒金） -->
+          <rect x="10" y="62" width="76" height="30" fill="#101010"/>
+          <rect x="10" y="62" width="8" height="30" fill="#060606"/>
+          <rect x="78" y="62" width="8" height="30" fill="#060606"/>
+          <rect x="18" y="62" width="60" height="8" fill="#e8c040"/>
+          <rect x="24" y="70" width="48" height="16" fill="#060606"/>
+          <rect x="30" y="72" width="36" height="10" fill="#e8c040"/>
+          <rect x="36" y="76" width="24" height="6" fill="#fff080"/>
+          <!-- 豪華陣羽織（赤黒金） -->
+          <rect x="0" y="60" width="12" height="46" fill="#8a1010"/>
+          <rect x="84" y="60" width="12" height="46" fill="#8a1010"/>
+          <rect x="0" y="60" width="6" height="46" fill="#e8c040"/>
+          <rect x="90" y="60" width="6" height="46" fill="#e8c040"/>
+          <!-- 腕 -->
+          <rect x="0" y="62" width="10" height="28" fill="#101010"/>
+          <rect x="86" y="62" width="10" height="28" fill="#101010"/>
+          <!-- 脚 -->
+          <rect x="16" y="92" width="26" height="16" fill="#060606"/>
+          <rect x="54" y="92" width="26" height="16" fill="#060606"/>
+          <rect x="14" y="108" width="30" height="6" fill="#e8c040"/>
+          <rect x="52" y="108" width="30" height="6" fill="#e8c040"/>
+          <!-- 天下の名刀 -->
+          <rect x="78" y="22" width="8" height="74" fill="#8a6030"/>
+          <rect x="72" y="14" width="20" height="16" fill="#101010"/>
+          <rect x="76" y="12" width="8" height="80" fill="#d8e0f0"/>
+          <rect x="78" y="12" width="4" height="80" fill="#f0f8ff"/>
+          <!-- 発光エフェクト -->
+          <rect x="82" y="20" width="4" height="6" fill="#fff080"/>
+          <rect x="84" y="26" width="6" height="4" fill="#e8c040"/>
+        </svg>
+
+        <!-- Stage 10: Lv90-99 天下人 -->
+        <svg id="cs10" class="cstage" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" style="display:none">
+          <defs>
+            <radialGradient id="g10a" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#fff8a0" stop-opacity="0.4"/><stop offset="100%" stop-color="#fff8a0" stop-opacity="0"/></radialGradient>
+            <radialGradient id="g10b" cx="50%" cy="80%" r="45%"><stop offset="0%" stop-color="#e8c040" stop-opacity="0.5"/><stop offset="100%" stop-color="#e8c040" stop-opacity="0"/></radialGradient>
+          </defs>
+          <rect x="0" y="0" width="96" height="96" fill="url(#g10a)"/>
+          <rect x="0" y="0" width="96" height="96" fill="url(#g10b)"/>
+          <ellipse cx="48" cy="92" rx="26" ry="6" fill="rgba(220,180,0,0.6)"/>
+          <!-- 後光 -->
+          <rect x="36" y="0" width="24" height="4" fill="#fff8a0"/>
+          <rect x="30" y="4" width="36" height="4" fill="#e8c040"/>
+          <!-- 天下人の兜（金） -->
+          <rect x="8" y="4" width="80" height="30" fill="#c8a020"/>
+          <rect x="2" y="8" width="8" height="30" fill="#c8a020"/>
+          <rect x="86" y="8" width="8" height="30" fill="#c8a020"/>
+          <!-- 最豪華前立て -->
+          <rect x="28" y="0" width="40" height="16" fill="#e8c040"/>
+          <rect x="32" y="0" width="32" height="12" fill="#fff080"/>
+          <rect x="36" y="0" width="24" height="8" fill="#ffffff"/>
+          <rect x="40" y="0" width="16" height="4" fill="#fff8a0"/>
+          <!-- 黄金垂れ -->
+          <rect x="2" y="34" width="92" height="10" fill="#a08010"/>
+          <!-- 顔 -->
+          <rect x="20" y="28" width="56" height="30" fill="#d4a870"/>
+          <rect x="26" y="32" width="14" height="14" fill="#fff"/><rect x="56" y="32" width="14" height="14" fill="#fff"/>
+          <rect x="30" y="34" width="10" height="12" fill="#c08000"/><rect x="58" y="34" width="10" height="12" fill="#c08000"/>
+          <!-- 威厳ある目 -->
+          <rect x="26" y="32" width="18" height="5" fill="#c8a020"/>
+          <rect x="52" y="32" width="18" height="5" fill="#c8a020"/>
+          <rect x="36" y="48" width="24" height="4" fill="#806040"/>
+          <rect x="36" y="58" width="24" height="6" fill="#d4a870"/>
+          <!-- 最高位黄金鎧 -->
+          <rect x="8" y="64" width="80" height="30" fill="#c8a020"/>
+          <rect x="8" y="64" width="8" height="30" fill="#a08010"/>
+          <rect x="80" y="64" width="8" height="30" fill="#a08010"/>
+          <rect x="16" y="64" width="64" height="8" fill="#fff080"/>
+          <rect x="22" y="72" width="52" height="16" fill="#a08010"/>
+          <rect x="28" y="74" width="40" height="10" fill="#e8c040"/>
+          <rect x="34" y="76" width="28" height="6" fill="#fff080"/>
+          <!-- 天下の陣羽織（純金） -->
+          <rect x="0" y="62" width="10" height="48" fill="#e8c040"/>
+          <rect x="86" y="62" width="10" height="48" fill="#e8c040"/>
+          <rect x="0" y="62" width="5" height="48" fill="#fff080"/>
+          <rect x="91" y="62" width="5" height="48" fill="#fff080"/>
+          <!-- 腕（黄金） -->
+          <rect x="0" y="64" width="8" height="28" fill="#c8a020"/>
+          <rect x="88" y="64" width="8" height="28" fill="#c8a020"/>
+          <!-- 脚（黄金） -->
+          <rect x="14" y="94" width="28" height="14" fill="#a08010"/>
+          <rect x="54" y="94" width="28" height="14" fill="#a08010"/>
+          <rect x="12" y="108" width="32" height="6" fill="#e8c040"/>
+          <rect x="52" y="108" width="32" height="6" fill="#e8c040"/>
+          <rect x="12" y="108" width="32" height="3" fill="#fff080"/>
+          <rect x="52" y="108" width="32" height="3" fill="#fff080"/>
+          <!-- 天下の宝刀（神) -->
+          <rect x="78" y="8" width="10" height="84" fill="#c8a020"/>
+          <rect x="70" y="2" width="22" height="16" fill="#c8a020"/>
+          <rect x="74" y="0" width="10" height="92" fill="#f0f0f8"/>
+          <rect x="76" y="0" width="6" height="92" fill="#ffffff"/>
+          <!-- 宝刀光 -->
+          <rect x="72" y="0" width="6" height="6" fill="#fff8a0"/>
+          <rect x="86" y="6" width="6" height="6" fill="#e8c040"/>
+          <rect x="70" y="12" width="6" height="4" fill="#fff080"/>
+          <!-- 後光の光線 -->
+          <rect x="0" y="0" width="4" height="4" fill="#fff8a0"/>
+          <rect x="92" y="0" width="4" height="4" fill="#fff8a0"/>
+          <rect x="0" y="8" width="4" height="4" fill="#e8c040"/>
+          <rect x="92" y="8" width="4" height="4" fill="#e8c040"/>
+          <rect x="44" y="0" width="8" height="4" fill="#ffffff"/>
+        </svg>
+      </div>
+
+      <div class="char-info">
+        <div class="char-name" id="charName">某</div>
+        <div class="char-title" id="charTitle">農民の子</div>
+        <div class="char-lv">石高 <span id="lvNum">1</span> 万石</div>
+        <div style="margin-top:6px">
+          <div class="xp-labels"><span>武功</span><span id="xpTxt">0 / 10</span></div>
+          <div class="xp-bg"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-icon">📜</div><div class="stat-val" id="stTotal">0<span>分</span></div><div class="stat-lbl">総修行時間</div></div>
+      <div class="stat"><div class="stat-icon">⚔️</div><div class="stat-val" id="stToday">0<span>分</span></div><div class="stat-lbl">本日の修行</div></div>
+      <div class="stat"><div class="stat-icon">🔥</div><div class="stat-val" id="stStreak">0<span>日</span></div><div class="stat-lbl">連続修行</div></div>
+      <div class="stat stat-avg"><div class="stat-icon">⛩️</div><div class="stat-val" id="stAvg">0<span>分</span></div><div class="stat-lbl">日々の平均</div></div>
+    </div>
+  </div>
+
+  <!-- Timer Card -->
+  <div class="card">
+    <h2>修行 稽古</h2>
+    <div class="subj-row" id="subjRow">
+      <button class="subj-btn active" data-s="兵法">⚔️ 兵法</button>
+      <button class="subj-btn" data-s="外交">🤝 外交</button>
+      <button class="subj-btn" data-s="医術">🌿 医術</button>
+      <button class="subj-btn" data-s="読書">📖 読書</button>
+      <button class="subj-btn" data-s="地理">🗾 地理</button>
+      <button class="subj-btn" data-s="琴">🎵 琴</button>
+    </div>
+
+    <div class="koto-panel" id="kotoPanel" style="display:none">
+      <div style="font-family:'Zen Antique',serif;font-size:0.85rem;color:var(--accent);margin-bottom:12px">🎵 琴の稽古</div>
+      <div style="margin-bottom:10px"><label>曲名</label><input type="text" id="kotoSong" placeholder="例: 六段の調、さくら さくら"></div>
+      <div style="display:-webkit-flex;display:flex;gap:8px;-webkit-align-items:center;align-items:center">
+        <div style="-webkit-flex:1;flex:1"><label>難易度</label>
+          <div class="diff-row" id="diffRow">
+            <button class="diff-btn active" data-d="初伝">初伝</button>
+            <button class="diff-btn" data-d="中伝">中伝</button>
+            <button class="diff-btn" data-d="奥伝">奥伝</button>
+          </div>
+        </div>
+        <div style="-webkit-flex:1;flex:1"><label>武功倍率</label><div class="xp-rate" id="xpRate">×1.0</div></div>
+      </div>
+      <div style="margin-top:10px"><label>稽古記録</label><textarea id="kotoMemo" rows="2" placeholder="例: 右手だけで三回..."></textarea></div>
+    </div>
+
+    <div class="timer-display" id="timerDisp">00:00</div>
+    <div class="timer-sub" id="timerSub">稽古を始めよ</div>
+    <div class="timer-btns">
+      <button class="btn btn-start" id="btnStart">▶ 開始</button>
+      <button class="btn btn-stop" id="btnStop" style="display:none">⏸ 中断</button>
+      <button class="btn btn-reset" id="btnReset">↺</button>
+    </div>
+  </div>
+
+  <!-- Log -->
+  <div class="card">
+    <h2>本日の軍記</h2>
+    <div id="logList"><div class="empty-log">— 記録なし —</div></div>
+  </div>
+
+  <!-- Achievements -->
+  <div class="card"><h2>武勲・功績</h2><div class="ach-grid" id="achGrid"></div></div>
+
+  <!-- Minigames -->
+  <div class="card"><h2>余興・試し合い</h2><div id="mgList"></div></div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Level Up -->
+<div class="overlay lu-bg" id="luOverlay">
+  <div class="lu-box">
+    <div class="big">〜 出世 〜</div>
+    <div class="lnum" id="luNum">2</div>
+    <div style="font-size:0.7rem;color:var(--dim);letter-spacing:0.3em;margin-bottom:4px">万石</div>
+    <div class="ltitle" id="luTitle"></div>
+    <div class="lunlock" id="luUnlock" style="display:none"></div>
+    <div class="lu-btns">
+      <button class="lu-btn" id="luClose" style="background:var(--surface);color:var(--dim);border:1px solid var(--border)">控える</button>
+      <button class="lu-btn" id="luPlay" style="display:none;background:-webkit-linear-gradient(135deg,#a06010,#d4a030);background:linear-gradient(135deg,#a06010,#d4a030);color:#0f0c08">余興で遊ぶ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Minigame overlay -->
+<div class="overlay mg-bg" id="mgOverlay">
+  <div class="mg-inner">
+    <button class="mg-close-btn" id="mgClose">✕</button>
+    <div id="mgContent"></div>
+  </div>
+</div>
+
+<script>
+// ===== LEVELS (Lv99 MAX = 500時間) =====
+var LEVELS = [
+  {lv:1, xp:10, title:'農民の子'},{lv:2, xp:20, title:'村人頭'},{lv:3, xp:30, title:'郷士'},
+  {lv:4, xp:52, title:'下級武士'},{lv:5, xp:84, title:'足軽頭'},{lv:6, xp:126, title:'徒士'},
+  {lv:7, xp:177, title:'与力'},{lv:8, xp:237, title:'同心'},{lv:9, xp:307, title:'番士'},
+  {lv:10, xp:387, title:'足軽大将'},{lv:11, xp:477, title:'小頭'},{lv:12, xp:578, title:'組頭'},
+  {lv:13, xp:689, title:'馬廻り'},{lv:14, xp:811, title:'侍大将'},{lv:15, xp:944, title:'物頭'},
+  {lv:16, xp:1088, title:'番頭'},{lv:17, xp:1244, title:'郡奉行'},{lv:18, xp:1410, title:'代官'},
+  {lv:19, xp:1589, title:'奉行'},{lv:20, xp:1778, title:'武士'},
+  {lv:21, xp:1980, title:'上士'},{lv:22, xp:2193, title:'知行取り'},{lv:23, xp:2419, title:'旗本'},
+  {lv:24, xp:2656, title:'小姓'},{lv:25, xp:2906, title:'近習'},{lv:26, xp:3167, title:'馬廻り衆'},
+  {lv:27, xp:3442, title:'城代家老'},{lv:28, xp:3728, title:'家老'},{lv:29, xp:4027, title:'宿老'},
+  {lv:30, xp:4339, title:'忍び頭'},{lv:31, xp:4664, title:'上忍'},{lv:32, xp:5001, title:'忍者衆頭'},
+  {lv:33, xp:5352, title:'黒装束の将'},{lv:34, xp:5715, title:'影武者'},{lv:35, xp:6091, title:'忍の長'},
+  {lv:36, xp:6481, title:'軍師'},{lv:37, xp:6883, title:'参謀'},{lv:38, xp:7299, title:'智将'},
+  {lv:39, xp:7729, title:'策士'},{lv:40, xp:8171, title:'城主'},
+  {lv:41, xp:8627, title:'小城主'},{lv:42, xp:9097, title:'中城主'},{lv:43, xp:9580, title:'大城主'},
+  {lv:44, xp:10077, title:'国人'},{lv:45, xp:10588, title:'国人領主'},
+  {lv:46, xp:11113, title:'一揆の長'},{lv:47, xp:11651, title:'土豪'},{lv:48, xp:12204, title:'地侍頭'},
+  {lv:49, xp:12770, title:'武将'},{lv:50, xp:13350, title:'大武将'},
+  {lv:51, xp:13945, title:'勇将'},{lv:52, xp:14553, title:'猛将'},{lv:53, xp:15176, title:'知将'},
+  {lv:54, xp:15813, title:'謀将'},{lv:55, xp:16465, title:'軍神'},
+  {lv:56, xp:17130, title:'小大名'},{lv:57, xp:17811, title:'大名'},{lv:58, xp:18505, title:'大大名'},
+  {lv:59, xp:19214, title:'有力大名'},{lv:60, xp:19938, title:'国主'},
+  {lv:61, xp:20677, title:'二ヶ国主'},{lv:62, xp:21430, title:'三ヶ国主'},{lv:63, xp:22197, title:'四ヶ国主'},
+  {lv:64, xp:22980, title:'五ヶ国主'},{lv:65, xp:23777, title:'管領'},
+  {lv:66, xp:24590, title:'探題'},{lv:67, xp:25417, title:'副将軍'},{lv:68, xp:26259, title:'大老'},
+  {lv:69, xp:27116, title:'関白'},{lv:70, xp:27988, title:'太閤'},
+  {lv:71, xp:28875, title:'征夷大将軍'},{lv:72, xp:29777, title:'天下の副将軍'},
+  {lv:73, xp:30695, title:'幕府の柱'},{lv:74, xp:31627, title:'天下取り目前'},
+  {lv:75, xp:32575, title:'覇者'},
+  {lv:76, xp:33539, title:'天下布武の旗手'},{lv:77, xp:34517, title:'日ノ本の将'},
+  {lv:78, xp:35511, title:'天下無双'},{lv:79, xp:36520, title:'伝説の武将'},
+  {lv:80, xp:37545, title:'天下の覇者'},
+  {lv:81, xp:38585, title:'四海を制す者'},{lv:82, xp:39641, title:'日輪の将'},
+  {lv:83, xp:40712, title:'神将'},{lv:84, xp:41799, title:'天才軍師'},
+  {lv:85, xp:42902, title:'戦神'},
+  {lv:86, xp:44020, title:'天下統一目前'},{lv:87, xp:45154, title:'五畿七道の主'},
+  {lv:88, xp:46304, title:'天皇の後見'},{lv:89, xp:47469, title:'不世出の英雄'},
+  {lv:90, xp:48651, title:'天下人候補'},
+  {lv:91, xp:49848, title:'日ノ本の神'},{lv:92, xp:51061, title:'武神'},
+  {lv:93, xp:52290, title:'知神'},{lv:94, xp:53535, title:'学問の神'},
+  {lv:95, xp:54796, title:'天帝'},
+  {lv:96, xp:56073, title:'永久の覇者'},{lv:97, xp:57366, title:'伝説を超えし者'},
+  {lv:98, xp:58675, title:'天下統一'},{lv:99, xp:60000, title:'天下人'}
+];
+
+var ACHS = [
+  {id:'a1', icon:'🌾', name:'初めての修行', ok:function(s){return s.total>=5;}},
+  {id:'a2', icon:'⚔️', name:'半刻の修行',   ok:function(s){return s.total>=30;}},
+  {id:'a3', icon:'🏯', name:'一刻の壁',     ok:function(s){return s.total>=60;}},
+  {id:'a4', icon:'🗡️', name:'五刻突破',     ok:function(s){return s.total>=300;}},
+  {id:'a5', icon:'🚀', name:'十刻突破',     ok:function(s){return s.total>=600;}},
+  {id:'a6', icon:'🔥', name:'三日連続',     ok:function(s){return s.streak>=3;}},
+  {id:'a7', icon:'💎', name:'七日連続',     ok:function(s){return s.streak>=7;}},
+  {id:'a8', icon:'🏆', name:'足軽大将',     ok:function(s){return s.level>=10;}},
+  {id:'a9', icon:'⭐', name:'武将の位',     ok:function(s){return s.level>=30;}},
+  {id:'a10',icon:'👑', name:'大名の格',     ok:function(s){return s.level>=60;}},
+  {id:'a11',icon:'🌸', name:'天下人',       ok:function(s){return s.level>=99;}},
+  {id:'a12',icon:'🎵', name:'琴の入門',     ok:function(s){return (s.pianoMin||0)>=10;}},
+  {id:'a13',icon:'🎼', name:'琴の名手',     ok:function(s){return (s.pianoMin||0)>=60;}},
+  {id:'a14',icon:'🎶', name:'琴の達人',     ok:function(s){return (s.pianoMin||0)>=300;}},
+  {id:'a15',icon:'🎭', name:'奥伝を極む',   ok:function(s){return (s.pianoAdv||0)>=1;}}
+];
+
+var GAMES = [
+  {id:'quiz',   lv:2,  icon:'🧮', name:'算術問答',   desc:'算術の問いに答えよ。正解で武功を得る'},
+  {id:'memory', lv:10, icon:'🃏', name:'絵合わせ',   desc:'家紋を合わせよ。記憶が試される'},
+  {id:'rhythm', lv:20, icon:'🥁', name:'鼓の稽古',   desc:'拍子に合わせて叩け'}
+];
+
+var SCOLS = {兵法:'#c83020',外交:'#4080c0',医術:'#40a840',読書:'#d4a030',地理:'#a05828',琴:'#a040c0'};
+var PRATE = {初伝:1.0, 中伝:1.5, 奥伝:2.0};
+
+// ===== STATE =====
+function saveState(){ localStorage.setItem('taikoki1', JSON.stringify(state)); }
+
+var raw = localStorage.getItem('taikoki1');
+var state = raw ? JSON.parse(raw) : {total:0,today:0,streak:1,xp:0,level:1,logs:[],achs:[],lastDate:new Date().toDateString(),daily:{},pianoMin:0,pianoAdv:0};
+if (!state.daily) { state.daily = {}; }
+if (!state.achs) { state.achs = []; }
+if (state.lastDate !== new Date().toDateString()) {
+  if (state.today > 0) { state.daily[state.lastDate] = (state.daily[state.lastDate]||0) + state.today; }
+  state.today = 0;
+  state.lastDate = new Date().toDateString();
+  saveState();
+}
+
+var timerSec=0, timerRun=false, timerInt=null;
+var selSubj='兵法', selDiff='初伝';
+var toastTm=null, pendingGame=null;
+var rhythmRaf=null, rhythmCd=null;
+
+// ===== RENDER =====
+function render() {
+  var lv = LEVELS[Math.min(state.level-1, LEVELS.length-1)];
+  var stage = Math.min(Math.ceil(state.level/10), 10);
+  if (stage < 1) { stage = 1; }
+  for (var i=1; i<=10; i++) {
+    var el = document.getElementById('cs'+i);
+    if (el) { el.style.display = (i===stage) ? 'block' : 'none'; }
+  }
+  document.getElementById('charTitle').textContent = lv.title;
+  document.getElementById('lvNum').textContent = state.level;
+  var prevXp = state.level > 1 ? LEVELS[state.level-2].xp : 0;
+  var span = lv.xp - prevXp;
+  var cur = state.xp - prevXp;
+  var pct = span > 0 ? Math.min(100, Math.round(cur/span*100)) : 100;
+  document.getElementById('xpTxt').textContent = state.xp + ' / ' + lv.xp;
+  document.getElementById('xpFill').style.width = pct + '%';
+  document.getElementById('stTotal').innerHTML = state.total + '<span>分</span>';
+  document.getElementById('stToday').innerHTML = state.today + '<span>分</span>';
+  document.getElementById('stStreak').innerHTML = state.streak + '<span>日</span>';
+  var days = [];
+  for (var k in state.daily) { if (state.daily.hasOwnProperty(k)) { days.push(state.daily[k]); } }
+  if (state.today > 0 && !state.daily[new Date().toDateString()]) { days.push(state.today); }
+  var avg = days.length > 0 ? Math.round(days.reduce(function(a,b){return a+b;},0)/days.length) : 0;
+  document.getElementById('stAvg').innerHTML = avg + '<span>分</span>';
+  renderLog(); renderAch(); renderGames();
+}
+
+function renderLog() {
+  var el = document.getElementById('logList');
+  var today = new Date().toDateString();
+  var logs = [];
+  for (var i=0; i<state.logs.length; i++) { if (state.logs[i].date===today) { logs.push(state.logs[i]); } }
+  logs = logs.slice(-6).reverse();
+  if (logs.length===0) { el.innerHTML = '<div class="empty-log">— 記録なし —</div>'; return; }
+  var html = '';
+  for (var j=0; j<logs.length; j++) {
+    var l = logs[j];
+    var extra = '';
+    if (l.subj==='琴' && (l.song||l.diff)) { extra = '<div style="font-size:0.68rem;color:#a040c0;margin-top:2px">'+(l.song?'🎵 '+l.song:'')+(l.diff?' ['+l.diff+']':'')+'</div>'; }
+    html += '<div class="log-item"><div class="log-dot" style="background:'+(SCOLS[l.subj]||'#aaa')+';width:8px;height:8px;"></div><div class="log-subj">'+l.subj+extra+'</div><div style="display:-webkit-flex;display:flex;gap:8px"><div class="log-time">'+l.min+'分</div><div class="log-xp">+'+l.xp+'</div></div></div>';
+  }
+  el.innerHTML = html;
+}
+
+function renderAch() {
+  var html = '';
+  for (var i=0; i<ACHS.length; i++) {
+    var a = ACHS[i]; var on = state.achs.indexOf(a.id)>=0;
+    html += '<div class="ach-item'+(on?' on':'')+'"><div class="ach-icon">'+a.icon+'</div><div class="ach-name">'+a.name+'</div></div>';
+  }
+  document.getElementById('achGrid').innerHTML = html;
+}
+
+function renderGames() {
+  var html = '';
+  for (var i=0; i<GAMES.length; i++) {
+    var g = GAMES[i];
+    if (state.level >= g.lv) {
+      html += '<div class="mg-item" onclick="openGame(\''+g.id+'\')"><div style="font-size:2rem;width:40px;text-align:center">'+g.icon+'</div><div style="-webkit-flex:1;flex:1"><div style="font-family:\'Zen Antique\',serif;font-size:0.95rem;letter-spacing:0.05em">'+g.name+'</div><div style="font-size:0.7rem;color:var(--dim);margin-top:2px">'+g.desc+'</div></div><div style="color:var(--accent);font-size:1.2rem">▶</div></div>';
+    } else {
+      html += '<div class="mg-item mg-lock"><div style="font-size:2rem;width:40px;text-align:center;-webkit-filter:grayscale(1);filter:grayscale(1)">'+g.icon+'</div><div style="-webkit-flex:1;flex:1"><div style="font-family:\'Zen Antique\',serif;font-size:0.95rem">'+g.name+'</div><div style="font-size:0.7rem;color:var(--dim)">🔒 '+g.lv+'万石で解放</div></div></div>';
+    }
+  }
+  if (!html) { html = '<div class="empty-log">石高2万石で余興が解放されます</div>'; }
+  document.getElementById('mgList').innerHTML = html;
+}
+
+// ===== TIMER =====
+function fmt(s){ var m=Math.floor(s/60),sc=s%60; return (m<10?'0':'')+m+':'+(sc<10?'0':'')+sc; }
+
+function startTimer() {
+  if (timerRun) { return; }
+  timerRun = true;
+  document.getElementById('btnStart').style.display = 'none';
+  document.getElementById('btnStop').style.display = 'inline-block';
+  document.getElementById('timerDisp').className = 'timer-display running';
+  document.getElementById('timerSub').textContent = selSubj==='琴' ? '🎵 琴の稽古中... ['+selDiff+']' : selSubj+'の修行中...';
+  timerInt = setInterval(function(){
+    timerSec++;
+    document.getElementById('timerDisp').textContent = fmt(timerSec);
+    if (timerSec%300===0) { addSession(5, false); }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (!timerRun) { return; }
+  clearInterval(timerInt); timerInt=null; timerRun=false;
+  document.getElementById('btnStart').style.display = 'inline-block';
+  document.getElementById('btnStop').style.display = 'none';
+  document.getElementById('timerDisp').className = 'timer-display';
+  document.getElementById('timerSub').textContent = '稽古を始めよ';
+  var mins = Math.floor(timerSec/60);
+  if (mins>=1) { addSession(mins, true); timerSec=timerSec%60; document.getElementById('timerDisp').textContent=fmt(timerSec); }
+  else { showToast('一分以上で記録されます'); }
+}
+
+function resetTimer() {
+  if (timerRun) { stopTimer(); }
+  timerSec=0; document.getElementById('timerDisp').textContent='00:00';
+}
+
+function addSession(mins, manual) {
+  var isKoto = (selSubj==='琴');
+  var rate = isKoto ? PRATE[selDiff] : 1.0;
+  var gained = Math.round(mins*2*rate);
+  state.total+=mins; state.today+=mins;
+  var today=new Date().toDateString();
+  state.daily[today]=(state.daily[today]||0)+mins;
+  if (isKoto) {
+    state.pianoMin=(state.pianoMin||0)+mins;
+    if (selDiff==='奥伝'&&manual) { state.pianoAdv=(state.pianoAdv||0)+1; }
+  }
+  var oldLv=state.level;
+  state.xp+=gained;
+  while (state.level<LEVELS.length && state.xp>=LEVELS[state.level-1].xp) { state.level++; }
+  if (manual) {
+    var entry={subj:selSubj,min:mins,xp:gained,date:new Date().toDateString()};
+    if (isKoto) { entry.song=document.getElementById('kotoSong').value; entry.diff=selDiff; entry.memo=document.getElementById('kotoMemo').value; }
+    state.logs.push(entry);
+    showToast(mins+'分の修行 武功 +'+gained);
+  }
+  checkAchs();
+  if (state.level>oldLv) { (function(lv){setTimeout(function(){showLevelUp(lv);},600);})(state.level); }
+  saveState(); render();
+}
+
+function checkAchs() {
+  for (var i=0; i<ACHS.length; i++) {
+    var a=ACHS[i];
+    if (state.achs.indexOf(a.id)<0 && a.ok(state)) {
+      state.achs.push(a.id);
+      (function(n,ic){setTimeout(function(){showToast('武勲解除！「'+n+'」 '+ic);},1200);})(a.name,a.icon);
+    }
+  }
+}
+
+function showLevelUp(lv) {
+  var ldata=LEVELS[Math.min(lv-1,LEVELS.length-1)];
+  document.getElementById('luNum').textContent=lv;
+  document.getElementById('luTitle').textContent='称号：'+ldata.title;
+  var newGame=null;
+  for (var i=0;i<GAMES.length;i++){if(GAMES[i].lv===lv){newGame=GAMES[i];break;}}
+  var uEl=document.getElementById('luUnlock');
+  var pBtn=document.getElementById('luPlay');
+  if (newGame) { uEl.textContent='「'+newGame.name+'」が解放された！'; uEl.style.display='block'; pBtn.style.display='inline-block'; pendingGame=newGame.id; }
+  else { uEl.style.display='none'; pBtn.style.display='none'; pendingGame=null; }
+  document.getElementById('luOverlay').className='overlay lu-bg show';
+  spawnSakura();
+}
+function closeLU(){ document.getElementById('luOverlay').className='overlay lu-bg'; renderGames(); }
+function playFromLU(){ closeLU(); if(pendingGame){(function(g){setTimeout(function(){openGame(g);},300);})(pendingGame);} }
+
+function showToast(msg){
+  var el=document.getElementById('toast');
+  el.textContent=msg; el.className='toast show';
+  if(toastTm){clearTimeout(toastTm);}
+  toastTm=setTimeout(function(){el.className='toast';},2800);
+}
+
+function spawnSakura(){
+  var cols=['#f0a0b0','#d4a030','#f8d0a0','#c87040','#e8c0a0'];
+  for (var i=0;i<60;i++){
+    (function(){
+      var p=document.createElement('div');
+      p.className='particle';
+      p.style.left=Math.random()*100+'vw'; p.style.top='-10px';
+      p.style.background=cols[Math.floor(Math.random()*cols.length)];
+      p.style.borderRadius='50% 10% 50% 10%';
+      var dur=(1.5+Math.random()*2.5)+'s';
+      p.style.webkitAnimationDuration=dur; p.style.animationDuration=dur;
+      var delay=(Math.random()*0.8)+'s';
+      p.style.webkitAnimationDelay=delay; p.style.animationDelay=delay;
+      document.body.appendChild(p);
+      setTimeout(function(){if(p.parentNode){p.parentNode.removeChild(p);}},5000);
+    })();
+  }
+}
+
+function initSubjBtns(){
+  var btns=document.querySelectorAll('#subjRow .subj-btn');
+  for(var i=0;i<btns.length;i++){
+    (function(btn){
+      btn.addEventListener('click',function(){
+        for(var j=0;j<btns.length;j++){btns[j].className='subj-btn';}
+        btn.className='subj-btn active';
+        selSubj=btn.getAttribute('data-s');
+        document.getElementById('kotoPanel').style.display=(selSubj==='琴')?'block':'none';
+        if(selSubj==='琴'){document.getElementById('timerSub').textContent='琴の稽古の設定をして開始せよ';}
+      });
+    })(btns[i]);
+  }
+}
+
+function initDiffBtns(){
+  var btns=document.querySelectorAll('#diffRow .diff-btn');
+  for(var i=0;i<btns.length;i++){
+    (function(btn){
+      btn.addEventListener('click',function(){
+        for(var j=0;j<btns.length;j++){btns[j].className='diff-btn';}
+        btn.className='diff-btn active';
+        selDiff=btn.getAttribute('data-d');
+        document.getElementById('xpRate').textContent='x'+PRATE[selDiff].toFixed(1);
+      });
+    })(btns[i]);
+  }
+}
+
+// ===== MINIGAMES =====
+function openGame(id){
+  document.getElementById('mgOverlay').className='overlay mg-bg show';
+  var el=document.getElementById('mgContent');
+  if(id==='quiz'){buildQuiz(el);}
+  else if(id==='memory'){buildMemory(el);}
+  else if(id==='rhythm'){buildRhythm(el);}
+}
+function closeGame(){
+  document.getElementById('mgOverlay').className='overlay mg-bg';
+  if(rhythmRaf){cancelAnimationFrame(rhythmRaf);rhythmRaf=null;}
+  if(rhythmCd){clearInterval(rhythmCd);rhythmCd=null;}
+}
+function giveXP(xp,label){
+  state.xp+=xp;
+  var oldLv=state.level;
+  while(state.level<LEVELS.length&&state.xp>=LEVELS[state.level-1].xp){state.level++;}
+  if(state.level>oldLv){(function(lv){setTimeout(function(){showLevelUp(lv);},800);})(state.level);}
+  saveState(); render(); showToast(label+' 武功+'+xp);
+}
+function ghdr(icon,name){
+  return '<div style="text-align:center;margin-bottom:24px;padding-top:8px"><div style="font-size:3rem">'+icon+'</div><div style="font-family:\'Zen Antique\',serif;font-size:1.4rem;color:var(--accent);margin-top:6px;letter-spacing:0.2em">'+name+'</div></div>';
+}
+function resultScr(el,icon,title,sub,gid){
+  el.innerHTML=ghdr(icon,title)+'<div style="text-align:center;background:var(--card);border:1px solid var(--border);padding:32px 24px"><div style="font-size:3rem">🎌</div><div style="font-family:\'Zen Antique\',serif;font-size:1.6rem;color:var(--accent);margin:10px 0;letter-spacing:0.1em">'+sub+'</div><div style="display:-webkit-flex;display:flex;gap:8px;-webkit-justify-content:center;justify-content:center;margin-top:20px"><button onclick="openGame(\''+gid+'\')" style="background:-webkit-linear-gradient(135deg,#a06010,#d4a030);background:linear-gradient(135deg,#a06010,#d4a030);color:#0f0c08;border:none;padding:12px 28px;font-family:\'Noto Sans JP\',sans-serif;font-weight:700;cursor:pointer;border-radius:2px">再び挑む</button><button onclick="closeGame()" style="background:var(--surface);color:var(--dim);border:1px solid var(--border);padding:12px 24px;font-family:\'Noto Sans JP\',sans-serif;cursor:pointer;border-radius:2px">引く</button></div></div>';
+}
+
+function rn(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function shuf(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+function buildQuiz(el){
+  var qs=makeQs(),qi=0,score=0;
+  function draw(){
+    if(qi>=qs.length){giveXP(score*5,'算術問答 '+score+'/'+qs.length+'問正解');resultScr(el,'🧮','算術問答',score+' / '+qs.length+' 正解','quiz');return;}
+    var q=qs[qi];
+    var opts='';
+    for(var i=0;i<q.opts.length;i++){opts+='<button onclick="qA('+i+','+q.ci+')" style="background:var(--card);border:2px solid var(--border);padding:18px;font-family:\'Zen Antique\',serif;font-size:1.4rem;color:var(--text);cursor:pointer;width:100%;-webkit-tap-highlight-color:transparent;border-radius:2px">'+q.opts[i]+'</button>';}
+    el.innerHTML=ghdr('🧮','算術問答')+'<div style="text-align:center;margin-bottom:8px;color:var(--dim);font-size:0.8rem;letter-spacing:0.2em">'+(qi+1)+' / '+qs.length+'問</div><div style="background:var(--card);border:1px solid var(--border);padding:28px 20px;margin-bottom:16px;text-align:center"><div style="font-family:\'Zen Antique\',serif;font-size:2.2rem;color:var(--text);margin-bottom:8px">'+q.q+'</div><div style="font-size:0.8rem;color:var(--dim)">= ?</div></div><div style="display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:12px" id="qOpts">'+opts+'</div><div id="qFb" style="text-align:center;margin-top:16px;min-height:40px"></div>';
+    var done=false;
+    window.qA=function(idx,ci){
+      if(done){return;}done=true;
+      var obs=document.querySelectorAll('#qOpts button');
+      for(var j=0;j<obs.length;j++){
+        if(j===ci){obs[j].style.borderColor='#7ab840';obs[j].style.background='rgba(122,184,64,0.15)';}
+        else if(j===idx&&idx!==ci){obs[j].style.borderColor='#c03020';obs[j].style.background='rgba(192,48,32,0.15)';}
+      }
+      if(idx===ci){score++;}
+      document.getElementById('qFb').innerHTML='<span style="font-size:1.5rem;font-family:Zen Antique,serif">'+(idx===ci?'⭕ 正解':'❌ 答えは '+q.ans)+'</span>';
+      setTimeout(function(){qi++;draw();},1200);
+    };
+  }
+  draw();
+}
+function makeQs(){
+  var qs=[];
+  for(var i=0;i<5;i++){
+    var t=['add','sub','mul','div'][Math.floor(Math.random()*4)];
+    var a,b,ans,q;
+    if(t==='add'){a=rn(10,50);b=rn(10,50);ans=a+b;q=a+' + '+b;}
+    else if(t==='sub'){a=rn(20,80);b=rn(5,a-1);ans=a-b;q=a+' - '+b;}
+    else if(t==='mul'){a=rn(2,12);b=rn(2,12);ans=a*b;q=a+' × '+b;}
+    else{a=rn(2,9);b=rn(2,9);ans=a;q=(a*b)+' ÷ '+b;}
+    var opts=shuf([ans,ans+rn(1,5),ans-rn(1,4),ans+rn(6,12)]);
+    while(opts.indexOf(ans)<0){opts=shuf([ans,ans+rn(1,5),ans-rn(1,4),ans+rn(6,12)]);}
+    qs.push({q:q,ans:ans,opts:opts,ci:opts.indexOf(ans)});
+  }
+  return qs;
+}
+
+function buildMemory(el){
+  var emojis=['🏯','⚔️','🗡️','🎌','🌸','🐉','🦅','🌙'];
+  var cards=shuf(emojis.concat(emojis)).map(function(e,i){return{id:i,emoji:e,flipped:false,matched:false};});
+  var sel=[],moves=0,locked=false;
+  function draw(){
+    var matched=0;
+    for(var i=0;i<cards.length;i++){if(cards[i].matched){matched++;}}
+    var grid='';
+    for(var j=0;j<cards.length;j++){
+      var c=cards[j];
+      var bg=c.matched?'rgba(212,160,48,0.15)':(c.flipped?'var(--card)':'var(--surface)');
+      var bc=c.matched?'var(--accent)':(c.flipped?'#c8a030':'var(--border)');
+      grid+='<div onclick="mF('+c.id+')" style="aspect-ratio:1;background:'+bg+';border:2px solid '+bc+';display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;font-size:1.8rem;cursor:pointer;'+(c.matched?'pointer-events:none;':'')+'-webkit-tap-highlight-color:transparent;border-radius:2px">'+(c.flipped||c.matched?c.emoji:'')+'</div>';
+    }
+    el.innerHTML=ghdr('🃏','家紋合わせ')+'<div style="display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:14px;font-size:0.8rem;color:var(--dim)"><span>組：<b style="color:var(--xp)">'+(matched/2)+'/8</b></span><span>手：<b style="color:var(--accent)">'+moves+'</b></span></div><div style="display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:10px" id="mGrid">'+grid+'</div>';
+    window.mF=function(id){
+      if(locked){return;}
+      var card=null;for(var x=0;x<cards.length;x++){if(cards[x].id===id){card=cards[x];break;}}
+      if(!card||card.flipped||card.matched){return;}
+      card.flipped=true;sel.push(card);draw();
+      if(sel.length===2){
+        moves++;locked=true;
+        if(sel[0].emoji===sel[1].emoji){
+          sel[0].matched=true;sel[1].matched=true;sel=[];locked=false;draw();
+          var allDone=true;for(var y=0;y<cards.length;y++){if(!cards[y].matched){allDone=false;break;}}
+          if(allDone){var b=Math.max(10,40-moves);giveXP(b,'絵合わせ '+moves+'手でクリア');setTimeout(function(){resultScr(el,'🃏','家紋合わせ',moves+'手でクリア','memory');},500);}
+        }else{setTimeout(function(){sel[0].flipped=false;sel[1].flipped=false;sel=[];locked=false;draw();},900);}
+      }
+    };
+  }
+  draw();
+}
+
+function buildRhythm(el){
+  var COLS=4,CCOLS=['#d4a030','#c03020','#4080c0','#7ab840'];
+  var score=0,miss=0,notes=[],frame=0,active=true,timeLeft=30,lastSpawn=0;
+  var HIT_Y=248,MAXMISS=5,SPEED=4;
+  el.innerHTML=ghdr('🥁','鼓の稽古')+'<div style="display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;margin-bottom:10px;font-size:0.82rem"><span style="color:var(--xp)">拍：<b id="rSc">0</b></span><span style="color:var(--accent)">⏱ <b id="rTm">30</b>s</span><span style="color:#c03020">外れ：<b id="rMs">0</b>/'+MAXMISS+'</span></div><div id="rTrack" style="background:var(--surface);border:1px solid var(--border);height:320px;position:relative;overflow:hidden"><div style="position:absolute;bottom:72px;left:0;right:0;height:2px;background:rgba(212,160,48,0.3)"></div><div id="rNotes" style="position:absolute;top:0;left:0;width:100%;height:100%"></div></div><div style="display:-webkit-flex;display:flex;gap:8px;margin-top:10px" id="rBtns">'+(function(){var s='';for(var i=0;i<4;i++){s+='<button onclick="rT('+i+')" id="rb'+i+'" style="background:'+CCOLS[i]+'22;border:2px solid '+CCOLS[i]+'66;padding:18px 0;font-size:1.4rem;cursor:pointer;-webkit-flex:1;flex:1;color:'+CCOLS[i]+';-webkit-tap-highlight-color:transparent;border-radius:2px">▼</button>';}return s;})()+'</div><div style="text-align:center;margin-top:10px;font-size:0.72rem;color:var(--dim);letter-spacing:0.2em">印が線に来たら叩け</div>';
+  var notesEl=document.getElementById('rNotes');
+  var trackEl=document.getElementById('rTrack');
+  function spawn(){
+    var col=Math.floor(Math.random()*COLS);
+    var colW=trackEl.offsetWidth/COLS;
+    var n={col:col,y:-20,id:frame,hit:false};notes.push(n);
+    var d=document.createElement('div');
+    d.id='rn'+n.id;
+    d.style.cssText='position:absolute;width:'+(colW-12)+'px;height:32px;background:'+CCOLS[col]+';left:'+(col*colW+6)+'px;top:-32px;-webkit-box-shadow:0 0 10px '+CCOLS[col]+'88;box-shadow:0 0 10px '+CCOLS[col]+'88;border-radius:4px;';
+    notesEl.appendChild(d);
+  }
+  rhythmCd=setInterval(function(){
+    if(!active){return;}
+    timeLeft--;
+    var t=document.getElementById('rTm');if(t){t.textContent=timeLeft;}
+    if(timeLeft<=0){endR();}
+  },1000);
+  function loop(){
+    if(!active){return;}
+    frame++;
+    if(frame-lastSpawn>30+Math.floor(Math.random()*30)){spawn();lastSpawn=frame;}
+    for(var i=notes.length-1;i>=0;i--){
+      var n=notes[i];if(n.hit){continue;}
+      n.y+=SPEED;
+      var d=document.getElementById('rn'+n.id);
+      if(d){d.style.top=n.y+'px';}
+      if(n.y>HIT_Y+40){
+        n.hit=true;miss++;
+        if(d){d.style.opacity='0.2';(function(dd){setTimeout(function(){if(dd&&dd.parentNode){dd.parentNode.removeChild(dd);}},300);})(d);}
+        var ms=document.getElementById('rMs');if(ms){ms.textContent=miss;}
+        if(miss>=MAXMISS){endR();return;}
+      }
+    }
+    rhythmRaf=requestAnimationFrame(loop);
+  }
+  window.rT=function(col){
+    var btn=document.getElementById('rb'+col);
+    if(btn){btn.style.background=CCOLS[col]+'55';(function(b){setTimeout(function(){if(b){b.style.background=CCOLS[col]+'22';}},150);})(btn);}
+    for(var i=0;i<notes.length;i++){
+      var n=notes[i];
+      if(n.col===col&&!n.hit&&n.y>HIT_Y-50&&n.y<HIT_Y+50){
+        n.hit=true;score++;
+        var d=document.getElementById('rn'+n.id);
+        if(d){d.style.background='#fff8a0';(function(dd){setTimeout(function(){if(dd&&dd.parentNode){dd.parentNode.removeChild(dd);}},200);})(d);}
+        var sc=document.getElementById('rSc');if(sc){sc.textContent=score;}
+        break;
+      }
+    }
+  };
+  function endR(){
+    active=false;
+    if(rhythmCd){clearInterval(rhythmCd);rhythmCd=null;}
+    if(rhythmRaf){cancelAnimationFrame(rhythmRaf);rhythmRaf=null;}
+    giveXP(score*3,'鼓の稽古 '+score+'拍');
+    setTimeout(function(){resultScr(el,'🥁','鼓の稽古','拍数：'+score,'rhythm');},500);
+  }
+  rhythmRaf=requestAnimationFrame(loop);
+}
+
+// ===== INIT =====
+document.getElementById('btnStart').addEventListener('click', startTimer);
+document.getElementById('btnStop').addEventListener('click', stopTimer);
+document.getElementById('btnReset').addEventListener('click', resetTimer);
+document.getElementById('luClose').addEventListener('click', closeLU);
+document.getElementById('luPlay').addEventListener('click', playFromLU);
+document.getElementById('mgClose').addEventListener('click', closeGame);
+initSubjBtns();
+initDiffBtns();
+render();
+</script>
+</body>
+</html>
